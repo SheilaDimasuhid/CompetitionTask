@@ -70,7 +70,7 @@ namespace MarsFramework.Config {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\Sheila\source\repos\marsframework\MarsFramework\ExcelData\TestData.xlsx.
+        ///   Looks up a localized string similar to C:\Users\Sheila\source\repos\CompetitionTask\MarsFramework\ExcelData\TestData.xlsx.
         /// </summary>
         internal static string ExcelPath {
             get {
@@ -88,7 +88,7 @@ namespace MarsFramework.Config {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\Sheila\source\repos\marsframework\MarsFramework\TestReports\MarsFramework.html.
+        ///   Looks up a localized string similar to C:\Users\Sheila\source\repos\CompetitionTask\MarsFramework\TestReports\MarsFramework.html.
         /// </summary>
         internal static string ReportPath {
             get {
@@ -97,7 +97,7 @@ namespace MarsFramework.Config {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\Sheila\source\repos\marsframework\MarsFramework\Config.
+        ///   Looks up a localized string similar to C:\Users\Sheila\source\repos\CompetitionTask\MarsFramework\Config.
         /// </summary>
         internal static string ReportXMLPath {
             get {
@@ -106,7 +106,7 @@ namespace MarsFramework.Config {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C:\Users\Sheila\source\repos\marsframework\MarsFramework\TestReports\Screenshots\.
+        ///   Looks up a localized string similar to C:\Users\Sheila\source\repos\CompetitionTask\MarsFramework\TestReports\Screenshots\.
         /// </summary>
         internal static string ScreenShotPath {
             get {

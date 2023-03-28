@@ -38,7 +38,7 @@ namespace MarsFramework.Global
                 case 2:
                     ChromeOptions options = new ChromeOptions();
                     options.AddArgument("no-sandbox");
-                    GlobalDefinitions.driver = new ChromeDriver("C:\\Program Files\\Google\\Chrome\\Application");
+                    GlobalDefinitions.driver = new ChromeDriver("C:\\Users\\Sheila\\source\\repos\\CompetitionTask\\MarsFramework");
                     GlobalDefinitions.driver.Manage().Window.Maximize();
                     break;
 
@@ -73,7 +73,7 @@ namespace MarsFramework.Global
         {
 
             // Screenshot
-            String img = SaveScreenShotClass.SaveScreenshot(GlobalDefinitions.driver, "Report");//AddScreenCapture(@"E:\Dropbox\VisualStudio\Projects\Beehive\TestReports\ScreenShots\");
+            String img = SaveScreenShotClass.SaveScreenshot(GlobalDefinitions.driver, "Report");
             test.Log(LogStatus.Info, "Image example: " + img);
             // end test. (Reports)
             extent.EndTest(test);

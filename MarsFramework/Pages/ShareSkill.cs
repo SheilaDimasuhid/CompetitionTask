@@ -295,7 +295,7 @@ namespace MarsFramework.Pages
 
             //Upload a file
             Thread.Sleep(4000);
-            using (Process fileUploadProcess = Process.Start(@"C:\Users\Sheila\source\repos\marsframework\MarsFramework\FileUpload\FileUploadScript.exe"))
+            using (Process fileUploadProcess = Process.Start(@"C:\Users\Sheila\source\repos\CompetitionTask\MarsFramework\FileUpload\FileUploadScript.exe"))
             {
                 fileUploadProcess.WaitForExit();
             }
