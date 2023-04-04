@@ -86,17 +86,17 @@ namespace MarsFramework.Pages
                 wait(30);
                 if (action == "edit")
                 {
-                    IWebElement EditService(string t) => driver.FindElement(By.XPath("//td[text()='" + title + "']/..//I[@class='outline write icon']"));
+                    IWebElement EditService() => driver.FindElement(By.XPath("//td[text()='" + title + "']/..//I[@class='outline write icon']"));
                     
-                    var editService = EditService(title);
+                    var editService = EditService();
                     wait(10);
                     editService.Click();
                 }
                 else if (action == "delete")
                 {
-                    IWebElement DeleteService(string t) => driver.FindElement(By.XPath("//td[text()='" + title + "']/..//I[@class='remove icon']"));
+                    IWebElement DeleteService() => driver.FindElement(By.XPath("//td[text()='" + title + "']/..//I[@class='remove icon']"));
                 
-                    var deleteService = DeleteService(title);
+                    var deleteService = DeleteService();
                     wait(10);
                     deleteService.Click();
                 }           

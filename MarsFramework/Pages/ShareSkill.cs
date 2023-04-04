@@ -111,9 +111,6 @@ namespace MarsFramework.Pages
         [FindsBy(How = How.ClassName, Using = "ns-box-inner")]
         private IWebElement NotificationMessage { get; set; }
 
-
-
-
         private string serviceTitle;
         private string description;
         private string category;
@@ -289,20 +286,16 @@ namespace MarsFramework.Pages
                 CreditAmount.SendKeys(credit);
             }
 
-            wait(10);
+            
             //Click Work Sample            
             WorkSamples.Click();
 
             //Upload a file
             Thread.Sleep(4000);
-            using (Process fileUploadProcess = Process.Start(@"C:\Users\Sheila\source\repos\CompetitionTask\MarsFramework\FileUpload\FileUploadScript.exe"))
-            {
-                fileUploadProcess.WaitForExit();
-            }
+            ProcessStartInfo psi = new ProcessStartInfo(@"C:\Users\Sheila\source\repos\CompetitionTask\MarsFramework\FileUpload\FileUploadScript.exe");
+            Process fileUploadProcess = Process.Start(psi);
+            fileUploadProcess.WaitForExit();
 
-
-            //Enter Active Option            
-            wait(500);
             if (active=="Active")
                 ActiveOption.ElementAt(0).Click();
             else
