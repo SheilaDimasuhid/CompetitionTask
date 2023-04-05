@@ -90,6 +90,14 @@ namespace MarsFramework.Pages
         [FindsBy(How = How.XPath, Using = "//input[@name=\"isActive\"]")]
         private IList<IWebElement> ActiveOption { get; set; }
 
+        //invalid characters in Title
+        [FindsBy(How = How.XPath, Using = "//DIV[@class='ui basic red prompt label transition visible'][text()='Special characters are not allowed.']")]
+        private IWebElement InvalidCharactersInTitle { get; set; }
+
+        //invalid characters in Description
+        [FindsBy(How = How.XPath, Using = "//DIV[@class='ui basic red prompt label transition visible'][text()='Special characters are not allowed.'])[2]")]
+        private IWebElement InvalidCharactersInDesc { get; set; }
+
         //Click on Save button
         [FindsBy(How = How.XPath, Using = "//input[@value='Save']")]
         private IWebElement Save { get; set; }
@@ -99,7 +107,8 @@ namespace MarsFramework.Pages
         private IWebElement ListingTitle { get; set; }
 
         public static string message;
-        private static string expectedTitle;
+        private static string expectedTitle;        
+        public bool IsInvalidCharactersEntered = false;
 
         public void AddNewService(int row)
         {            
@@ -108,7 +117,8 @@ namespace MarsFramework.Pages
             ShareSkillButton.Click();
             PopulateInCollection(Base.ExcelPath, "ShareSkill");
             expectedTitle = ExcelLib.ReadData(row, "Title");
-            EnterShareSkill(row);            
+            EnterShareSkill(row);
+            
         }
         
         public void EnterShareSkill(int row)
@@ -119,12 +129,13 @@ namespace MarsFramework.Pages
             wait(20); 
 
             Title.Clear();
-            Title.SendKeys(ExcelLib.ReadData(row, "Title"));
+            Title.SendKeys(ExcelLib.ReadData(row, "Title"));                        
 
-            //Enter ExcelLib.ReadData(row, "Description")
+            //Enter Description
             wait(20);
             Description.Clear();            
-            Description.SendKeys(ExcelLib.ReadData(row, "Description"));
+            Description.SendKeys(ExcelLib.ReadData(row, "Description"));     
+                         
 
             //Enter Catergory
             wait(20);
@@ -144,9 +155,13 @@ namespace MarsFramework.Pages
             //Enter Service Type
             wait(20);
             if (ExcelLib.ReadData(row, "ServiceType") == "Hourly basis service")
+            {
                 ServiceTypeOptions.ElementAt(0).Click();
+            }
             else
+            {
                 ServiceTypeOptions.ElementAt(1).Click();
+            }
 
             //Enter Location Type
             wait(20);
@@ -232,17 +247,15 @@ namespace MarsFramework.Pages
 
             //Click Save           
             Save.Click();
-
             try
             {               
                 message = driver.FindElement(By.XPath("//div[@class=\"ns-box-inner\"]")).Text;               
             }
-            catch (StaleElementReferenceException stale)
+            catch (StaleElementReferenceException)
             {
                 message = "Toast Message stale";
-            }
+            }           
         }
-
         public string GetActualTitle()
         {
             WaitToBeVisible(driver, "XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[1]/td[3]", 30);
@@ -252,6 +265,6 @@ namespace MarsFramework.Pages
         public string GetExpectedTitle()
         {
             return expectedTitle;
-        }
+        }        
     }
 }

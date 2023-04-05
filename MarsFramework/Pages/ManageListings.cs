@@ -1,4 +1,5 @@
 ﻿using MarsFramework.Global;
+using MongoDB.Driver.Core.Operations;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.PageObjects;
 using OpenQA.Selenium.Support.UI;
@@ -146,5 +147,19 @@ namespace MarsFramework.Pages
             }
 
         }
+
+        //public Boolean IsTitleRepeated()
+        //{
+        //    int count = 0;
+
+        //    while ()
+        //    {
+
+        //    }
+
+
+        //    return false;
+        //}
+
     }
 }
