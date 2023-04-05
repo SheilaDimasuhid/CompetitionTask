@@ -15,27 +15,69 @@ namespace MarsFramework
         {
             
             
-            [Test]
-            public void Test_EnterShareSkill()
+            [Test(Description = "All required fields filled with correct values")]
+            public void Test_EnterShareSkill1_1()
             {            
-                test = extent.StartTest("Test_EnterShareSkill"); 
+                test = extent.StartTest("Test_EnterShareSkill_1"); 
 
                 ShareSkill newService = new ShareSkill();
-                newService.AddNewService();
+                newService.AddNewService(2);
+                          
+                Console.WriteLine("Actual notification Message: " + ShareSkill.message);
 
-                string notificationMessage = newService.GetNotificationMessage();               
-                Console.WriteLine("Actual notifcation Message: " + notificationMessage);
-
-                if (notificationMessage == "Please complete the form correctly.")
+                if (ShareSkill.message == "Please complete the form correctly.")
                 {
-                    Assert.That(notificationMessage == "Please complete the form correctly.", notificationMessage);
+                    Assert.That(ShareSkill.message == "Please complete the form correctly.", ShareSkill.message);
                 }
-                else if (notificationMessage == "Error while saving Service Listing")
+                else if (ShareSkill.message == "Error while saving Service Listing")
                 {
 
-                    Assert.That(notificationMessage == "Error while saving Service Listing", notificationMessage);
+                    Assert.That(ShareSkill.message == "Error while saving Service Listing", ShareSkill.message);
                 }
                 else {
+                    string actualTitle = newService.GetActualTitle();
+                    string expectedTitle = newService.GetExpectedTitle();
+
+                    Console.WriteLine("Actual Title: " + actualTitle);
+                    Console.WriteLine("Expected Title: " + expectedTitle);
+
+                    if (ShareSkill.message == "Service Listing Added successfully")
+                    {                        
+                        Assert.That(actualTitle == expectedTitle, ShareSkill.message);
+                    }
+                    else if (ShareSkill.message == "Toast Message stale")
+                    {                        
+                        Assert.That(actualTitle == expectedTitle, ShareSkill.message);
+                        Console.WriteLine("Page Refreshed. The notification message was no longer available");
+                    }                    
+                    else
+                    {                        
+                        Console.WriteLine("Notification box not stale but Actual Message not picked up.");
+                    }
+                }              
+
+            }
+            [Test(Description = "With missing entry on required field")]
+            public void Test_EnterShareSkill_2()
+            {
+                test = extent.StartTest("Test_EnterShareSkill_2");
+
+                ShareSkill newService = new ShareSkill();
+                newService.AddNewService(3);
+
+                Console.WriteLine("Actual notification Message: " + ShareSkill.message);
+
+                if (ShareSkill.message == "Please complete the form correctly.")
+                {
+                    Assert.That(ShareSkill.message == "Please complete the form correctly.", ShareSkill.message);
+                }
+                else if (ShareSkill.message == "Error while saving Service Listing")
+                {
+
+                    Assert.That(ShareSkill.message == "Error while saving Service Listing", ShareSkill.message);
+                }
+                else
+                {
 
                     string actualTitle = newService.GetActualTitle();
                     string expectedTitle = newService.GetExpectedTitle();
@@ -43,31 +85,30 @@ namespace MarsFramework
                     Console.WriteLine("Actual Title: " + actualTitle);
                     Console.WriteLine("Expected Title: " + expectedTitle);
 
-                    if (notificationMessage == "Service Listing Added successfully")
-                    {                        
-                        Assert.That(actualTitle == expectedTitle, notificationMessage);
+                    if (ShareSkill.message == "Service Listing Added successfully")
+                    {
+                        Assert.That(actualTitle == expectedTitle, ShareSkill.message);
                     }
-                    else if (notificationMessage == "Toast Message stale")
-                    {                        
-                        Assert.That(actualTitle == expectedTitle, notificationMessage);
+                    else if (ShareSkill.message == "Toast Message stale")
+                    {
+                        Assert.That(actualTitle == expectedTitle, ShareSkill.message);
                         Console.WriteLine("Page Refreshed. The notification message was no longer available");
-                    }                    
+                    }
                     else
-                    {                        
+                    {
                         Console.WriteLine("Notification box not stale but Actual Message not picked up.");
                     }
                 }
-               
 
             }
 
-            [Test]
-            public void Test_EditShareSkill()
+            [Test(Description = "Edit Service Details with all values on required fields")]
+            public void Test_EditShareSkill_1()
             {
-                test = extent.StartTest("Test_EditShareSkill");
+                test = extent.StartTest("Test_EditShareSkill_1");
 
                 ManageListings updateService = new ManageListings();
-                updateService.EditService();
+                updateService.EditService(2,5);
                
                 string notificationMessage = updateService.GetNotificationMessage();
                 Console.WriteLine("Actual notification Message: " + notificationMessage);
@@ -110,7 +151,7 @@ namespace MarsFramework
                 test = extent.StartTest("Test_DeleteShareSkill");
 
                 ManageListings deleteService = new ManageListings();
-                deleteService.DeleteService();
+                deleteService.DeleteService(2);
 
                 string notificationMessage = deleteService.GetNotificationMessage();
                 string expectedNotification = deleteService.TitleToBeDeleted() + " has been deleted";                

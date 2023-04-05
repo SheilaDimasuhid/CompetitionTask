@@ -9,7 +9,6 @@ using System.Threading;
 using static MarsFramework.Global.GlobalDefinitions;
 using static MarsFramework.Global.GlobalDefinitions.ExcelLib;
 
-
 namespace MarsFramework.Pages
 {
     public class ShareSkill
@@ -20,7 +19,7 @@ namespace MarsFramework.Pages
         }
 
         //Click on ShareSkill Button
-        [FindsBy(How = How.LinkText, Using = "Share Skill")]
+        [FindsBy(How = How.XPath, Using = "//A[@class='ui basic green button'][text()='Share Skill']")]
         private IWebElement ShareSkillButton { get; set; }
 
         //Enter the Title in textbox
@@ -47,10 +46,7 @@ namespace MarsFramework.Pages
         [FindsBy(How = How.XPath, Using = "//input[@Name=\"serviceType\"]")]
         private IList<IWebElement> ServiceTypeOptions { get; set; }
 
-        //IList<IWebElement> ServiceTypeOptions = GlobalDefinitions.driver.FindElements(By.XPath("//form/div[5]/div[@class='twelve wide column']/div/div[@class='field']"));
-
-        //Select the Location Type
-        //[FindsBy(How = How.XPath, Using = "//form/div[6]/div[@class='twelve wide column']/div/div[@class = 'field']")]
+        //Select the Location Type       
         [FindsBy(How = How.XPath, Using = "//input[@name=\"locationType\"]")]
         private IList<IWebElement> LocationTypeOption { get; set; }
 
@@ -73,15 +69,6 @@ namespace MarsFramework.Pages
         //Storing the starttime //div[3]/div[2]/input[1]
         [FindsBy(How = How.XPath, Using = "//input[@name=\"EndTime\"] ")]
         private IList<IWebElement> EndTime { get; set; }
-
-
-        ////Click on StartTime dropdown 
-        //[FindsBy(How = How.XPath, Using = "//div[3]/div[2]/input[1]")]
-        //private IWebElement StartTimeDropDown { get; set; }
-
-        ////Click on EndTime dropdown
-        //[FindsBy(How = How.XPath, Using = "//div[3]/div[3]/input[1]")]
-        //private IWebElement EndTimeDropDown { get; set; }
 
         //Click on Skill Trade option //form/div[8]/div[@class='twelve wide column']/div/div[@class = 'field']
         [FindsBy(How = How.XPath, Using = "//input[@name=\"skillTrades\"]")]
@@ -107,145 +94,82 @@ namespace MarsFramework.Pages
         [FindsBy(How = How.XPath, Using = "//input[@value='Save']")]
         private IWebElement Save { get; set; }
 
-        //Notification 
-        [FindsBy(How = How.ClassName, Using = "ns-box-inner")]
-        private IWebElement NotificationMessage { get; set; }
+        //Get title
+        [FindsBy(How = How.XPath, Using = "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[1]/td[3]")]
+        private IWebElement ListingTitle { get; set; }
 
-        private string serviceTitle;
-        private string description;
-        private string category;
-        private string subCategory;
-        private string tags;
-        private string serviceType;
-        private string locationType;
-        private string startDate;
-        private string endDate;
-        private string selectDay;
-        private string startTime;
-        private string endTime;
-        private string skillTrade;
-        private string skillExchange;
-        private string credit;
-        private string active;
-        private int i;
-        private string message;
+        public static string message;
+        private static string expectedTitle;
 
-
-        public void AddNewService()
-        {
-            wait(10);
-            ShareSkillButton.Click();
-            PopulateData();
-            FillUpData(2);
-            EnterShareSkill();
-            
-        }
-        public string GetNotificationMessage()
+        public void AddNewService(int row)
         {            
-            return message;
-        }
-
-        public string GetExpectedTitle()
-        {
-            return serviceTitle;
-        }
-
-        public string GetActualTitle()        
-        {           
-                ManageListings manageListing = new ManageListings();
-                return manageListing.GetActualTitle();                        
-
-        }
-
-        public string TitleToBeEdited(int r)
-        {
-            string t = ExcelLib.ReadData(r, "Title");
-            return t;
-        }
-        public void PopulateData()
-        {
+            wait(10);
+            WaitToBeVisible(driver, "XPath", "//A[@class='ui basic green button'][text()='Share Skill']", 30);
+            ShareSkillButton.Click();
             PopulateInCollection(Base.ExcelPath, "ShareSkill");
+            expectedTitle = ExcelLib.ReadData(row, "Title");
+            EnterShareSkill(row);            
         }
-
-        public void ClearInputs()
+        
+        public void EnterShareSkill(int row)
         {
-            GlobalDefinitions.wait(10);
-            Title.Clear();
-            GlobalDefinitions.wait(10);
-            Description.Clear();            
-        }
-        public void FillUpData(int row)
-        {
-            serviceTitle = ExcelLib.ReadData(row, "Title");
-            description = ExcelLib.ReadData(row, "Description");
-            category = ExcelLib.ReadData(row, "Category")  ;
-            subCategory = ExcelLib.ReadData(row, "SubCategory");
-            tags = ExcelLib.ReadData(row, "Tags");
-            serviceType = ExcelLib.ReadData(row, "ServiceType");
-            locationType = ExcelLib.ReadData(row, "LocationType");
-            startDate = ExcelLib.ReadData(row, "Startdate");
-            endDate = ExcelLib.ReadData(row, "Enddate");
-            selectDay = ExcelLib.ReadData(row, "Selectday") ;
-            startTime = ExcelLib.ReadData(row, "StartTime");
-            endTime = ExcelLib.ReadData(row, "EndTime");
-            skillTrade = ExcelLib.ReadData(row, "SkillTrade");
-            skillExchange = ExcelLib.ReadData(row, "SkillExchange");
-            credit = ExcelLib.ReadData(row, "Credit");
-            active = ExcelLib.ReadData(row, "Active");
+            int i = -1;
 
-        }
-
-        public void EnterShareSkill()
-        {
             //Enter title
             wait(20); 
-            Title.Clear();
-            Title.SendKeys(serviceTitle);
 
-            //Enter description
+            Title.Clear();
+            Title.SendKeys(ExcelLib.ReadData(row, "Title"));
+
+            //Enter ExcelLib.ReadData(row, "Description")
             wait(20);
             Description.Clear();            
-            Description.SendKeys(description);
+            Description.SendKeys(ExcelLib.ReadData(row, "Description"));
 
             //Enter Catergory
             wait(20);
             SelectElement setCategory = new SelectElement(CategoryDropDown);
-            setCategory.SelectByText(category);
+            setCategory.SelectByText(ExcelLib.ReadData(row, "Category"));
 
             //Enter subcategory
             wait(20);
             SelectElement setSubCategory= new SelectElement(SubCategoryDropDown);
-            setSubCategory.SelectByText(subCategory);
+            setSubCategory.SelectByText(ExcelLib.ReadData(row, "SubCategory"));
 
-            //Enter tags
+            //Enter ExcelLib.ReadData(row, "Tags")
             wait(20);
-            Tags.SendKeys(tags);
+            Tags.SendKeys(ExcelLib.ReadData(row, "Tags"));
             Tags.SendKeys(Keys.Enter);
 
             //Enter Service Type
             wait(20);
-            if (serviceType == "Hourly basis service")
+            if (ExcelLib.ReadData(row, "ServiceType") == "Hourly basis service")
                 ServiceTypeOptions.ElementAt(0).Click();
             else
                 ServiceTypeOptions.ElementAt(1).Click();
 
             //Enter Location Type
             wait(20);
-            if(locationType == "On-site")
+
+            if(ExcelLib.ReadData(row, "LocationType") == "On-site")
+            {
                 LocationTypeOption.ElementAt(0).Click();
+            }
             else
+            {
                 LocationTypeOption.ElementAt(1).Click();
+            }
 
             wait(20);            
-            StartDateDropDown.SendKeys(startDate);
+            StartDateDropDown.SendKeys(ExcelLib.ReadData(row, "Startdate"));
             StartDateDropDown.Click();
 
             wait(20);
-            EndDateDropDown.SendKeys(endDate);
+            EndDateDropDown.SendKeys(ExcelLib.ReadData(row, "Enddate"));
             EndDateDropDown.Click();
 
             wait(20);
-            switch (selectDay)
+            switch (ExcelLib.ReadData(row, "Selectday"))
             {
                 case "Sun": i = 0; break;
                 case "Mon": i = 1; break;
@@ -260,21 +184,22 @@ namespace MarsFramework.Pages
             Days.ElementAt(i).Click();
 
             wait(20);
-            StartTime.ElementAt(i).SendKeys(startTime);
+            StartTime.ElementAt(i).SendKeys(ExcelLib.ReadData(row, "StartTime"));
             StartTime.ElementAt(i).Click();
 
             wait(20);
-            EndTime.ElementAt(i).SendKeys(endTime);
+            EndTime.ElementAt(i).SendKeys(ExcelLib.ReadData(row, "EndTime"));
             EndTime.ElementAt(i).Click();
 
             wait(30);
+
             //Enter Skill Trade            
-            if (skillTrade == "Skill-exchange")
+            if (ExcelLib.ReadData(row, "SkillTrade") == "Skill-exchange")
             {                
                 SkillTradeOption.ElementAt(0).Click();
 
                 //Enter Skill Exchange                
-                SkillExchange.SendKeys(skillExchange);
+                SkillExchange.SendKeys(ExcelLib.ReadData(row, "SkillExchange"));
                 SkillExchange.SendKeys(Keys.Enter);
             }
             else
@@ -283,9 +208,8 @@ namespace MarsFramework.Pages
 
                 //Enter Credit Amount
                 wait(20);
-                CreditAmount.SendKeys(credit);
+                CreditAmount.SendKeys(ExcelLib.ReadData(row, "Credit"));
             }
-
             
             //Click Work Sample            
             WorkSamples.Click();
@@ -294,12 +218,17 @@ namespace MarsFramework.Pages
             Thread.Sleep(4000);
             ProcessStartInfo psi = new ProcessStartInfo(@"C:\Users\Sheila\source\repos\CompetitionTask\MarsFramework\FileUpload\FileUploadScript.exe");
             Process fileUploadProcess = Process.Start(psi);
+
             fileUploadProcess.WaitForExit();
 
-            if (active=="Active")
+            if (ExcelLib.ReadData(row, "Active") == "Active")
+            {
                 ActiveOption.ElementAt(0).Click();
+            }
             else
+            {
                 ActiveOption.ElementAt(1).Click();
+            }
 
             //Click Save           
             Save.Click();
@@ -311,12 +240,18 @@ namespace MarsFramework.Pages
             catch (StaleElementReferenceException stale)
             {
                 message = "Toast Message stale";
-                //throw new Exception(stale.Message);
             }
-            
-            //GlobalDefinitions.WaitToBeVisible(driver, "XPath", "//div[@class=\"ns-box-inner\"]", 500);                    
-            //GlobalDefinitions.WaitForElementToExist(driver, "ClassName", "ns-box-inner", 500);
-        }       
+        }
 
+        public string GetActualTitle()
+        {
+            WaitToBeVisible(driver, "XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[1]/td[3]", 30);
+            return ListingTitle.Text;
+        }
+
+        public string GetExpectedTitle()
+        {
+            return expectedTitle;
+        }
     }
 }

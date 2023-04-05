@@ -4,6 +4,7 @@ using OpenQA.Selenium.Support.PageObjects;
 using OpenQA.Selenium.Support.UI;
 using System;
 using static MarsFramework.Global.GlobalDefinitions;
+using static MarsFramework.Global.GlobalDefinitions.ExcelLib;
 
 namespace MarsFramework.Pages
 {
@@ -13,10 +14,6 @@ namespace MarsFramework.Pages
         {
             PageFactory.InitElements(Global.GlobalDefinitions.driver, this);
         }
-
-        //Click on Manage Listings Link
-        //[FindsBy(How = How.LinkText, Using = "Manage Listings")]
-        //A[@class='item'][text()='Manage Listings']
 
         [FindsBy(How = How.XPath, Using = "//A[@class='item'][text()='Manage Listings']")]
         private IWebElement manageListingsLink { get; set; }
@@ -50,89 +47,34 @@ namespace MarsFramework.Pages
         private IWebElement NotificationMessage { get; set; }
 
         private string message;
-        private string titleToBeDeleted;
-        private string titleToUpdate;
+        private string titleToBeDeleted;       
         private string confirm;
         private string serviceTitleUpdated;
-
-        public void Listings(int r)
-        {
-            //Populate the Excel Sheet
-            GlobalDefinitions.ExcelLib.PopulateInCollection(Base.ExcelPath, "ManageListings");
-            titleToBeDeleted = ExcelLib.ReadData(r, "Title");
-            confirm = ExcelLib.ReadData(r, "Deleteaction");
-
-        }
-        public void GoToManageListingsTab()
-        {
-            WaitToBeVisible(driver, "XPath", "//A[@class='item'][text()='Manage Listings']", 30);
-            manageListingsLink.Click();
-        }
-
-        public string GetActualTitle()
-        {
-
-            WaitToBeVisible(driver, "XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[1]/td[3]", 30);
-            return title.Text;
-        }
-        
-        public string GetExpectedTitle()
-        {
-            return serviceTitleUpdated;
-        }
-
-        private void GetExistingService(string title, string action)
-        {           
-                wait(30);
-                if (action == "edit")
-                {
-                    IWebElement EditService() => driver.FindElement(By.XPath("//td[text()='" + title + "']/..//I[@class='outline write icon']"));
-                    
-                    var editService = EditService();
-                    wait(10);
-                    editService.Click();
-                }
-                else if (action == "delete")
-                {
-                    IWebElement DeleteService() => driver.FindElement(By.XPath("//td[text()='" + title + "']/..//I[@class='remove icon']"));
                 
-                    var deleteService = DeleteService();
-                    wait(10);
-                    deleteService.Click();
-                }           
-
-        }
         
-        public void EditService()
+        public void EditService(int row, int newValue)
         {
-            ShareSkill service = new ShareSkill();            
+            string titleToUpdate;
 
             GoToManageListingsTab();
-
-            service.PopulateData();
-            titleToUpdate = service.TitleToBeEdited(2);
-            service.FillUpData(3);
-
+            PopulateInCollection(Base.ExcelPath, "ShareSkill");
+            titleToUpdate = ExcelLib.ReadData(row, "Title");  
             GetExistingService(titleToUpdate, "edit");
-
-            service.ClearInputs();
-            service.EnterShareSkill();
-
-            serviceTitleUpdated = service.GetExpectedTitle();
+            ShareSkill updateService = new ShareSkill();
+            updateService.EnterShareSkill(newValue);
+            serviceTitleUpdated = ExcelLib.ReadData(newValue, "Title");
+            message = ShareSkill.message;
         }
 
-        public string TitleToBeDeleted()
-        {
-            return titleToBeDeleted;
-
-        }
-               
-        public void DeleteService()
+                      
+        public void DeleteService(int row)
         {
             GoToManageListingsTab();
-            Listings(2);            
+            GlobalDefinitions.ExcelLib.PopulateInCollection(Base.ExcelPath, "ManageListings");           
+            titleToBeDeleted = ExcelLib.ReadData(row, "Title");
             GetExistingService(titleToBeDeleted, "delete");
-            
+            confirm = ExcelLib.ReadData(row, "Deleteaction");
+                        
             wait(30);
             IWebElement modalContainer = driver.FindElement(By.XPath("/html/body/div[2]/div"));                      
             
@@ -150,10 +92,58 @@ namespace MarsFramework.Pages
             
             message = NotificationMessage.Text;            
         }
-        
+
+        public string TitleToBeDeleted()
+        {
+            return titleToBeDeleted;
+
+        }
+
         public string GetNotificationMessage()
         {
+            
             return message;
+
+        }
+        
+        public void GoToManageListingsTab()
+        {
+            WaitToBeVisible(driver, "XPath", "//A[@class='item'][text()='Manage Listings']", 30);
+            manageListingsLink.Click();
+        }
+
+        public string GetActualTitle()
+        {
+
+            WaitToBeVisible(driver, "XPath", "//*[@id=\"listing-management-section\"]/div[2]/div[1]/div[1]/table/tbody/tr[1]/td[3]", 30);
+            return title.Text;
+        }
+
+        public string GetExpectedTitle()
+        {
+            return serviceTitleUpdated;
+        }
+        
+
+        private void GetExistingService(string title, string action)
+        {
+            wait(30);
+            if (action == "edit")
+            {
+                IWebElement EditService() => driver.FindElement(By.XPath("//td[text()='" + title + "']/..//I[@class='outline write icon']"));
+
+                var editService = EditService();
+                wait(10);
+                editService.Click();
+            }
+            else if (action == "delete")
+            {
+                IWebElement DeleteService() => driver.FindElement(By.XPath("//td[text()='" + title + "']/..//I[@class='remove icon']"));
+
+                var deleteService = DeleteService();
+                wait(10);
+                deleteService.Click();
+            }
 
         }
     }
